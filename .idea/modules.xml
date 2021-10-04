@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Ben/Ben.iml" filepath="$PROJECT_DIR$/Ben/Ben.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Completed/Completed.iml" filepath="$PROJECT_DIR$/Completed/Completed.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FinalInternetProject.iml" filepath="$PROJECT_DIR$/FinalInternetProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Leon/Leon.iml" filepath="$PROJECT_DIR$/Leon/Leon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NathanResources/NathanResources.iml" filepath="$PROJECT_DIR$/NathanResources/NathanResources.iml" />
+    </modules>
+  </component>
+</project>
