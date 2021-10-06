@@ -6,8 +6,6 @@ import java.util.concurrent.ExecutionException;
 public class MatrixIHandler implements IHandler, Serializable {
     private Matrix matrix;
     private Index start,end;
-
-
     //Reset params between clients - possible shared instance among clients/tasks.
     private void resetParams(){
         this.matrix = null;
