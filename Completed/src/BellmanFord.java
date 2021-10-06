@@ -6,7 +6,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import static java.lang.Thread.sleep;
 /*
  * This class uses classic BellmanFord algorithm to find all shortest paths from source to destination
- * on a weighted matrix with negative weights
+ * on a weighted matrix with  possible negative weights
  *First the function runs find path to initialize the distance matrix from source to destination
  * then it calls find Path function that runs on the distance matrix to find all the shortest paths
  *
@@ -18,7 +18,7 @@ public class BellmanFord {
     private ThreadPoolExecutor threadPool;
     private  Index source;
     private TraversableMatrix traversable;
-    private Queue<Index> InedxQueue;
+    private Queue<Index> indexQueue;
     private int[][] dist;
     private Future<List<Node>> futureList;
     private List<List<Node>> allShortestPath;
@@ -29,25 +29,21 @@ public class BellmanFord {
     protected ThreadLocal<Set<Node>> localPathFind =
             ThreadLocal.withInitial(() -> new HashSet<>());
 
-
     public BellmanFord(Matrix matrix,Index source, Index destination)
     {
         this.matrix = matrix;
-        this.threadPool = null;
+        //this.threadPool = null;
         this.traversable = new TraversableMatrix(this.matrix);
         this.traversable.setStartIndex(new Index(source.getRow(),source.getColumn())); // phase 3
         this.traversable.setEndIndex(new Index(destination.getRow(),destination.getColumn()));
-        InedxQueue = new LinkedList<>();
+        indexQueue = new LinkedList<>();
         dist = new int[matrix.lengthRow()][matrix.lengthCol()];
         readWriteLock = new ReentrantReadWriteLock();
         allShortestPath = new LinkedList<>();
         localnode = new Node<>(traversable.getEndIndex());
         finished = new HashSet<>();
-
         threadPool = new ThreadPoolExecutor(50, 100, 20,
                 TimeUnit.SECONDS, new LinkedBlockingQueue<>());
-
-
     }
     /*
      * This callable gets a distance matrix
@@ -55,7 +51,6 @@ public class BellmanFord {
      * for each node it checks its neighbors and finds the min neighbors
      *if there is two or more neighbors that are equal to min, the callable creates a new thread that find the other path.
      * when the last element in the list equal to the start index, the callable return a list which is a path from start to finish.
-     *
      * */
     Callable  <List<Node>>  task = () ->
     {
@@ -71,7 +66,7 @@ public class BellmanFord {
             int last = pathList.size()-1;
             Node node = pathList.get(last);
             localPathFind.get().add(node);
-            neighbor = traversable.getneighbores(node);
+            neighbor = traversable.getNeighbors(node);
 
             int min = Integer.MAX_VALUE;
             if (pathList.get((pathList.size() - 1)).getData().equals(traversable.getStartIndex()))
@@ -170,12 +165,12 @@ public class BellmanFord {
             }
         dist[traversable.getStartIndex().getRow()][traversable.getStartIndex().getColumn()] = matrix.getValue(traversable.getStartIndex());
         int matrixSize = matrix.lengthRow() * matrix.lengthCol();
-        InedxQueue.add(traversable.getStartIndex());
-        while (!InedxQueue.isEmpty())
+        indexQueue.add(traversable.getStartIndex());
+        while (!indexQueue.isEmpty())
         {
 
             Collection<Index> neighbor = new ArrayList<>();
-            Index index = InedxQueue.poll();
+            Index index = indexQueue.poll();
             finished.add(index);
             neighbor = matrix.getNeighbors(index);
             neighbor.addAll(matrix.getNeighborsWithCross(index)); // Added
@@ -188,9 +183,9 @@ public class BellmanFord {
 
 
                 }
-                if (!InedxQueue.contains(index1) && !finished.contains(index1))
+                if (!indexQueue.contains(index1) && !finished.contains(index1))
                 {
-                    InedxQueue.add(index1);
+                    indexQueue.add(index1);
                 }
 
             }

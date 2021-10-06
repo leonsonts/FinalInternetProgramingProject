@@ -1,10 +1,7 @@
 import org.jetbrains.annotations.NotNull;
-
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+
 
 public class Matrix  implements Serializable {
 
@@ -21,6 +18,8 @@ public class Matrix  implements Serializable {
     {
         this(matrix.primitiveMatrix);
     }
+
+    // Creating a binary matrix
     public Matrix(int row, int col) {
         Random r = new Random();
         primitiveMatrix = new int[row][col];
@@ -29,32 +28,27 @@ public class Matrix  implements Serializable {
                 primitiveMatrix[i][j] = r.nextInt(2);
             }
         }
-        for (int[] crow : primitiveMatrix) {
-            String s = Arrays.toString(crow);
+        for (int[] Crow : primitiveMatrix) {
+            String s = Arrays.toString(Crow);
             System.out.println(s);
         }
         System.out.println("\n");
     }
-    public  Matrix(int row, int col, int bond) {
+
+    // Creating a Weighted matrix
+    public  Matrix(int row, int col, int bound) {
         Random r = new Random();
         primitiveMatrix = new int[row][col];
-        for (int i = 0; i < primitiveMatrix.length; i++) {
-            int counter=0;
-            for (int j = 0; j < primitiveMatrix[0].length; j++) {
-                counter++;
+        for (int i = 0; i < primitiveMatrix.length; i++)
+            for (int j = 0; j < primitiveMatrix[0].length; j++)
+                primitiveMatrix[i][j] = r.nextInt(bound);
 
-                primitiveMatrix[i][j] = r.nextInt(bond);
-
-            }
-        }
         for (int[] crow : primitiveMatrix) {
             String s = Arrays.toString(crow);
             System.out.println(s);
         }
         System.out.println("\n");
     }
-
-
 
     @Override
     public String toString() {
@@ -65,7 +59,6 @@ public class Matrix  implements Serializable {
         }
         return stringBuilder.toString();
     }
-
 
     @NotNull
     public Collection<Index> getNeighbors(@NotNull final Index index) {
@@ -122,7 +115,6 @@ public class Matrix  implements Serializable {
 
         return list;
     }
-
     public int getValue(@NotNull final Index index) {
         return primitiveMatrix[index.row][index.column];
     }
@@ -134,16 +126,13 @@ public class Matrix  implements Serializable {
         }
     }
 
-    public final int[][] getPrimitiveMatrix() {
-        return primitiveMatrix;
-    }
-
-
     public int lengthRow()
     {
         return primitiveMatrix.length;
     }
+
     public int lengthCol() { return primitiveMatrix[0].length; }
+
     public Index indexCheck(int row)
     {
         Scanner scan = new Scanner(System.in);

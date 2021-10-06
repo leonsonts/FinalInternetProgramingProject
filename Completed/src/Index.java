@@ -1,11 +1,9 @@
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 import java.io.Serializable;
 
 
-public class Index implements Serializable, Comparable<Index>{
+public class Index implements Serializable{
     int row, column;
 
     public Index(final int row, final int column) {
@@ -41,14 +39,5 @@ public class Index implements Serializable, Comparable<Index>{
                 "," + column +
                 ')';
     }
-    @Override
-    public int compareTo(@NotNull Index o) {
-        if(row>o.row)
-            return 1;
-        else if (row<o.row)
-            return -1;
-        else if(column>o.column)
-            return 1;
-        else return -1;
-    }
+
 }

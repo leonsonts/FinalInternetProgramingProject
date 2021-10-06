@@ -1,4 +1,4 @@
-import java.awt.*;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -43,19 +43,18 @@ public class Node<T> implements Serializable {
     }
 
     /*
-This is used when accessing objects multiple times with comparisons,
-when using a HashTable
-Set<Node<T>> finished - this will work only if concrete object are different
-Node<Index> Node<Coordinate> Node<ComputerLocation>
-Node<Index> Node<Index> Node<Index>
- */
+        This is used when accessing objects multiple times with comparisons,
+        when using a HashTable
+        Set<Node<T>> finished - this will work only if concrete object are different
+        Node<Index> Node<Coordinate> Node<ComputerLocation>
+        Node<Index> Node<Index> Node<Index>
+    */
     @Override
     public int hashCode() {
 
         if(data != null) return data.hashCode();
         return 0;
     }
-
 
     @Override
     public boolean equals(Object o) {

@@ -20,11 +20,11 @@ public class MatrixIHandler implements IHandler, Serializable {
     public void handle(InputStream fromClient, OutputStream toClient)
             throws IOException, ClassNotFoundException, ExecutionException, InterruptedException {
 
-        // In order to read either objects or primitive types we can use ObjectInputStream
+        //Use switch-case in order to get command from the client
         ObjectInputStream objectInputStream = new ObjectInputStream(fromClient);
-        // In order to write either objects or primitive types we can use ObjectOutputStream
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(toClient);
-        this.resetParams(); // in order to use same handler between tasks/clients
+        this.resetParams();
+        // in order to use same handler between tasks/clients
 
         boolean doWork = true;
         while(doWork){

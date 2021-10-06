@@ -32,7 +32,7 @@ public class shortPaths implements Serializable {
      * */
     public List<List<Node<Index>>> findShortestPaths()  throws ExecutionException, InterruptedException {
 
-        BFSvisit<Index> BFS = new BFSvisit<>();
+        ThreadLocalBFS<Index> BFS = new ThreadLocalBFS<>();
         List<List<Node<Index>>> allPathsList = new ArrayList<>();
         List<List<Node<Index>>> shortestPathsList = new ArrayList<>();
         Integer min = null;

@@ -104,12 +104,6 @@ public class MyClient {
                         System.out.println("Please enter matrix first");
                         break;
                     }
-                    if(matrix.lengthCol() > 50 && matrix.lengthRow() > 50)
-                    {
-                        System.out.println("Matrix size is bigger then 50X50");
-                        break;
-
-                    }
                     if(matrix.lengthCol() != matrix.lengthRow())
                     {
                         System.out.println("Matrix is not square matrix!");

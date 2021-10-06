@@ -14,7 +14,7 @@ public class Connected {
     private Matrix matrix;
     private ThreadPoolExecutor threadPool;
     private Index source;
-    private ThreadLocalDfsVisit<Index> threadLocalDfsVisit;
+    private ThreadLocalDfs<Index> threadLocalDfs;
     private TraversableMatrix traversable;
 
     public Connected(Matrix matrix) {
@@ -24,7 +24,7 @@ public class Connected {
         this.source = new Index(0, 0);
         this.traversable = new TraversableMatrix(this.matrix);
         traversable.setStartIndex(new Index(0, 0));
-        threadLocalDfsVisit = new ThreadLocalDfsVisit<>();
+        threadLocalDfs = new ThreadLocalDfs<>();
     }
 
     protected ThreadLocal<Set<Index>> setThreadLocal =
@@ -43,7 +43,7 @@ public class Connected {
 
             HashSet<Index> visited = new HashSet<>();
             traversable.setStartIndex(source);
-            visited = threadLocalDfsVisit.traverseWithCross(traversable);
+            visited = threadLocalDfs.traverseWithCross(traversable);
             return visited;
         };
         threadPool = new ThreadPoolExecutor(5, 10, 10,
