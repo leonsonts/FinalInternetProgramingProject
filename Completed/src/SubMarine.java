@@ -8,7 +8,7 @@ public class SubMarine {
     private Matrix matrix;
     private Connected connectedComp;
     private ThreadPoolExecutor threadPool;
-    private HashSet<Index> hashSet;
+    private HashSet<Index> currentSingleComp;
     private Index[]  IndexArray;
     private int [] height=null;
     private ReadWriteLock lock;
@@ -33,34 +33,35 @@ public class SubMarine {
     public int[] getHeights()
     {
         Arrays.sort(IndexArray);//sorting the index array from the smallest to biggest
-        Stack<Integer> r = new Stack<>();
+        Stack<Integer> stackOfCols = new Stack<>();
         System.out.println(Arrays.toString(IndexArray));
-        int counterC =0;
+        int numOfDiffCols =0;
         for (int i = 0; i < IndexArray.length; i++)
         {
-            if(r.contains(IndexArray[i].getColumn())==false)//finding diffrent cols and defining the size of the array
+            if(!stackOfCols.contains(IndexArray[i].getColumn()))
+                //finding different cols and defining the size of the array
             {
-                counterC++;
-                r.add(IndexArray[i].getColumn());
+                numOfDiffCols++;
+                stackOfCols.add(IndexArray[i].getColumn());
             }
         }
-        int [] height = new int[counterC];
-        r.clear();
-        int rowTemp=IndexArray[IndexArray.length-1].getRow();
+        int [] height = new int[numOfDiffCols];
+        stackOfCols.clear();
+        int maxRowInComp=IndexArray[IndexArray.length-1].getRow();
         for (int i = 0; i < IndexArray.length; i++)
         {
-            if(r.contains(IndexArray[i].getColumn())==false)
+            if(!stackOfCols.contains(IndexArray[i].getColumn()))
             {
-                r.add(IndexArray[i].getColumn());
+                stackOfCols.add(IndexArray[i].getColumn());
 
-                for (int j = 0; j <= rowTemp; j++)
+                for (int j = 0; j <= maxRowInComp; j++)
                 {
                     Index check = new Index(j,IndexArray[i].getColumn());
-                    if (hashSet.contains(check)==true)
+                    if (currentSingleComp.contains(check)==true)
                     {
-                        height[check.getColumn()%counterC]+=1;
+                        height[check.getColumn()%numOfDiffCols]+=1;
                     }
-                    else height[check.getColumn()%counterC]=0;
+                    else height[check.getColumn()%numOfDiffCols]=0;
 
                 }
             }
@@ -118,9 +119,9 @@ public class SubMarine {
 
     /*The function finds how many valid submarine exists in the matrix
     first the function finds all the connected components
-    * for each component bigger then one, a new thread is created to check if it is a valid submarine
+    * for each component bigger than one, a new thread is created to check if it is a valid submarine
     *if it is, it adds one to the total count of how many submarine found
-    *writelock is been locked before entering critical section to insure only one writes to the variable
+    *writelock is been locked before entering critical section to ensure only one writes to the variable
     * */
     public int submarineFind() throws ExecutionException, InterruptedException {
 
@@ -129,24 +130,24 @@ public class SubMarine {
             int max = 0;
             height = getHeights();
             max = Math.max(max, findMaxArea(height));
-            if (max == hashSet.size()) {
+            if (max == currentSingleComp.size()) {
                 return 1;
             }
             return 0;
         };
 
-        List<HashSet<Index>> comp = connectedComp.ConnectedComponentsWithCross();
+        List<HashSet<Index>> scc = connectedComp.ConnectedComponentsWithCross();
         Stack<HashSet<Index>> stack = null;
 
         int marinesFound = 0;
         int i = 0;
 
-        for (i = 0; i < comp.size(); i++) {
+        for (i = 0; i < scc.size(); i++) {
 
-            hashSet = comp.get(i);
-            if (hashSet.size() > 1) {
-                IndexArray = new Index[hashSet.size()];
-                IndexArray = hashSet.toArray(new Index[hashSet.size()]);
+            currentSingleComp = scc.get(i);
+            if (currentSingleComp.size() > 1) {
+                IndexArray = new Index[currentSingleComp.size()];
+                IndexArray = currentSingleComp.toArray(new Index[currentSingleComp.size()]);
                 Future<Integer> futureTask = threadPool.submit(task);
                 lock.writeLock().lock();
                 try {
@@ -160,8 +161,13 @@ public class SubMarine {
             }
         }
         threadPool.shutdown();
-        System.out.println("marines found " + marinesFound);
-        return marinesFound;
+        if (marinesFound < scc.size()){
+            System.out.println("Invalid input");
+            return -1;
+        }
+            System.out.println("marines found " + marinesFound);
+            return marinesFound;
+
 
     }
 }

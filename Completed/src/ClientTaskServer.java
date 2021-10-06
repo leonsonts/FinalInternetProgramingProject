@@ -37,6 +37,5 @@ class ClientTaskServer implements Runnable {
         };
         threadPool.execute(clientHandling);
     }
-
 }
 

@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-public class MyClient {
+public class Client {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         Socket socket = new Socket("127.0.0.1", 8010);
         System.out.println("Client: Created Socket Successfully");
@@ -11,6 +11,8 @@ public class MyClient {
         ObjectOutputStream toServer = new ObjectOutputStream(outputStream);
         ObjectInputStream fromServer = new ObjectInputStream(inputStream);
         boolean doWork = true;
+
+
         Matrix matrix = null;
         Scanner scan = new Scanner(System.in);
         String string;
@@ -21,12 +23,11 @@ public class MyClient {
             System.out.println("Enter which task you want to perform: ");
             System.out.println("To generate a random matrix write: matrix");
             System.out.println("To generate a random weighted matrix write: weighted matrix");
-            System.out.println("To find Connected Components write: connected");
-            System.out.println("To find Shortest paths write: shortest paths");
-            System.out.println("To play SubMarine write: submarine");
-            System.out.println("To find shortest paths om weighted graph write: weighted");
-            System.out.println("To show Matrix write: show matrix");
-            System.out.println("To stop write : stop");
+            System.out.println("1. To find Connected Components ");
+            System.out.println("2. To find Shortest paths ");
+            System.out.println("3. To find number of Submarines");
+            System.out.println("4. To find shortest paths on weighted graph");
+            System.out.println("5. To stop");
             switch (string = scan.nextLine()) {
 
                 case "matrix": {
@@ -71,32 +72,30 @@ public class MyClient {
                         matrixcol = scanner.nextInt();
                     }
                     System.out.println("Enter positive bound");
-                    int bond = scanner.nextInt();
+                    int bound = scanner.nextInt();
                     toServer.writeObject("weighted matrix");
                     toServer.writeObject(matrixrow);
                     toServer.writeObject(matrixcol);
-                    toServer.writeObject(bond);
+                    toServer.writeObject(bound);
 
                     matrix = new Matrix((Matrix)fromServer.readObject());
                     System.out.println("The matrix is");
                     matrix.printMatrix();
                     break;
                 }
-                case "connected": {
+                case "1": {
 
                     if (matrix == null) {
                         System.out.println("Please enter matrix first");
                         break;
                     }
-
                     toServer.writeObject("Connected");
                     List<HashSet<Index>> connect = new ArrayList<HashSet<Index>>((List<HashSet<Index>>) fromServer.readObject());
                     System.out.println("The Connected components are: " + connect);
                     break;
-
                 }
 
-                case "shortest paths":
+                case "2":
                 {
                     if(matrix == null)
                     {
@@ -133,18 +132,13 @@ public class MyClient {
                         System.out.println("The shortest paths from " + startIndex + " to " + endIndex+ " are: " +shortest);
                     } catch (NullPointerException nullPointerException) {
                         System.out.println("not Connection between the  two Indices");}
-                    scan.nextLine();//clean buffer
+                    scan.nextLine();
+                    //clean buffer
 
                     break;
 
                 }
-                case "show matrix":
-                {
-                    matrix.printMatrix();
-                    break;
-                }
-
-                case "submarine":
+                case "3":
                 {
                     if (matrix == null) {
                         System.out.println("Please enter matrix first");
@@ -155,7 +149,7 @@ public class MyClient {
                     System.out.println("The number of submarines are: " + Submarine);
                     break;
                 }
-                case "weighted":
+                case "4":
                 {
                     if (matrix == null) {
                         System.out.println("Please enter matrix first");
@@ -163,17 +157,12 @@ public class MyClient {
                     }
                     System.out.println("Enter Start Index Row");
                     Index startIndex = matrix.indexCheck(scan.nextInt());
-
                     toServer.writeObject("start index");
                     toServer.writeObject(new Index(startIndex.getRow(), startIndex.getColumn()));
-
                     System.out.println("Enter end Index Row");
                     Index endIndex = matrix.indexCheck(scan.nextInt());
-
-
                     toServer.writeObject("end index");
                     toServer.writeObject(new Index(endIndex.getRow(), endIndex.getColumn()));
-
                     toServer.writeObject("weighted");
                     try {
                         List<List<Node>> list = new ArrayList<>((List<List<Node>>) fromServer.readObject());
@@ -184,7 +173,7 @@ public class MyClient {
                     scan.nextLine();//clean buffer
                     break;
                 }
-                case "stop":
+                case "5":
                 {
                     toServer.writeObject("stop");
                     fromServer.close();

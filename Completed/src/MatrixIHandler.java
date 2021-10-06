@@ -52,13 +52,7 @@ public class MatrixIHandler implements IHandler, Serializable {
                 case "Connected":
                 {
                     try {
-                        int[][] temp =  {
-                                {1,0,0},
-                                {0,0,1},
-                                {0,1,0}
-                        };
-                        Matrix matrix2 = new Matrix(temp);
-                        Connected connected = new Connected(matrix2);
+                        Connected connected = new Connected(matrix);
                         List<HashSet<Index>> lst = connected.ConnectedComponentsWithCross();
                         objectOutputStream.writeObject(lst);
                         System.out.println(lst);
@@ -70,27 +64,8 @@ public class MatrixIHandler implements IHandler, Serializable {
 
                 case "ShortestPath":{
                     try {
-                        int[][] temp = {
-                                {1, 0, 0, 0},
-                                {1, 1, 0, 0},
-                                {1, 1, 1, 0},
-                                {1, 1, 1, 1}
-                        };
 
-                        int[][] tempAdj = {
-                                {1, 1, 0, 1, 1, 1},
-                                {1, 1, 1, 0, 0, 0},
-                                {0, 1, 1, 1, 1, 1},
-                                {1, 0, 1, 1, 0, 0},
-                                {1, 0, 1, 0, 1, 0},
-                                {1, 0, 1, 0, 0, 1}
-                        };
-
-
-                        Matrix matrix2 = new Matrix(tempAdj);
-                        Index indexStart = new Index(2, 2);
-                        Index indexEnd = new Index(0, 1);
-                        shortPaths shortPaths = new shortPaths(matrix2, indexStart, indexEnd);
+                        shortPaths shortPaths = new shortPaths(matrix, start, end);
                         List<List<Node<Index>>> lst = shortPaths.findShortestPaths();
                         System.out.println(lst);
                         if (lst == null) {
@@ -106,15 +81,8 @@ public class MatrixIHandler implements IHandler, Serializable {
                 case "submarine": {
 
                     try {
-                        int [][] adjMatrix = new int [][]{
-                                {1,1,0,1,1},
-                                {0,0,0,1,1},
-                                {1,0,0,1,1},
-                        };
-                        Matrix testMatrix = new Matrix(adjMatrix);
-                        SubMarine submarine = new SubMarine(testMatrix);
+                        SubMarine submarine = new SubMarine(matrix);
                         int count = submarine.submarineFind();
-
                         objectOutputStream.writeObject(count);
 
                     } catch (NullPointerException nullPointerException) {
@@ -124,16 +92,11 @@ public class MatrixIHandler implements IHandler, Serializable {
                 case "weighted":
                 {
 
-                    int [][] tempArr = {
-                            {100, 100, 100},
-                            {500, 900, 300}
-                    };
-                    Matrix matrixNew = new Matrix(tempArr);
                     try {
                         BellmanFord bellmanFord = new BellmanFord(
-                                matrixNew,
-                                new Index(1,0),
-                                new Index(1,2)
+                                matrix,
+                                start,
+                                end
                         );
                         List<List<Node>> lst = bellmanFord.BellmanFordAlgo();
                         objectOutputStream.writeObject(lst);

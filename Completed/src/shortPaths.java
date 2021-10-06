@@ -28,7 +28,6 @@ public class shortPaths implements Serializable {
      *The function calls bfs.traverse that returns all the paths from source to destination
      *then the function finds the minimum size of the all Paths List
      *and runs again to find which list is the same size of minimum list and adds to the final list which holds only the shortest paths'
-     *
      * */
     public List<List<Node<Index>>> findShortestPaths()  throws ExecutionException, InterruptedException {
 
@@ -44,7 +43,7 @@ public class shortPaths implements Serializable {
         min = allPathsList.get(0).size();
         min = findMin(min,allPathsList);
 
-        for(List<Node<Index>> list : allPathsList)//find which list is the same size of min and adds it to the Shortest Path List
+        for(List<Node<Index>> list : allPathsList)//find which list has the same size of min and adds it to the Shortest Path List
         {
 
             if(min == list.size())
