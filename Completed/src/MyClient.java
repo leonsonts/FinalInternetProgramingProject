@@ -5,19 +5,18 @@ import java.util.*;
 public class MyClient {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         Socket socket = new Socket("127.0.0.1", 8010);
-        System.out.println("client: Created Socket");
-
+        System.out.println("Client: Created Socket Successfully");
         InputStream inputStream = socket.getInputStream();
         OutputStream outputStream = socket.getOutputStream();
         ObjectOutputStream toServer = new ObjectOutputStream(outputStream);
         ObjectInputStream fromServer = new ObjectInputStream(inputStream);
-        boolean work = true;
+        boolean doWork = true;
         Matrix matrix = null;
         Scanner scan = new Scanner(System.in);
         String string;
         int row;
         int col;
-        while (work)
+        while (doWork)
         {
             System.out.println("Enter which task you want to perform: ");
             System.out.println("To generate a random matrix write: matrix");
@@ -192,7 +191,7 @@ public class MyClient {
                     toServer.close();
                     socket.close();
                     System.out.println("client: Closed operational socket");
-                    work = false;
+                    doWork = false;
                     break;
                 }
 

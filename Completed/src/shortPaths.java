@@ -19,7 +19,7 @@ public class shortPaths implements Serializable {
 
         this.matrix = matrix;
         this.traversable = new TraversableMatrix(this.matrix);
-        this.traversable.setStartIndex(new Index(source.getRow(),source.getColumn())); // phase 3
+        this.traversable.setStartIndex(new Index(source.getRow(),source.getColumn()));
         this.traversable.setEndIndex(new Index(destination.getRow(),destination.getColumn()));
 
     }

@@ -2,16 +2,11 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-/*
- * The class received a matrix and returns the number of valid submarine in the matrix
- *
- *
- *
- * */
+ // The class receives a matrix and returns the number of valid submarine in the matrix
 public class SubMarine {
 
     private Matrix matrix;
-    private Connected connectedCopm;
+    private Connected connectedComp;
     private ThreadPoolExecutor threadPool;
     private HashSet<Index> hashSet;
     private Index[]  IndexArray;
@@ -20,15 +15,12 @@ public class SubMarine {
 
     public SubMarine(Matrix matrix) {
         this.matrix = matrix;
-        connectedCopm = new Connected(this.matrix);
+        connectedComp = new Connected(this.matrix);
         threadPool = new ThreadPoolExecutor(5, 10, 10,
                 TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         lock=new ReentrantReadWriteLock();
 
     }
-
-
-
 
     //finding maxArea in each SCC
     /*
@@ -143,7 +135,7 @@ public class SubMarine {
             return 0;
         };
 
-        List<HashSet<Index>> comp = connectedCopm.ConnectedComponentsWithCross();
+        List<HashSet<Index>> comp = connectedComp.ConnectedComponentsWithCross();
         Stack<HashSet<Index>> stack = null;
 
         int marinesFound = 0;

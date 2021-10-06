@@ -106,7 +106,13 @@ public class MatrixIHandler implements IHandler, Serializable {
                 case "submarine": {
 
                     try {
-                        SubMarine submarine = new SubMarine(matrix);
+                        int [][] adjMatrix = new int [][]{
+                                {1,1,0,1,1},
+                                {0,0,0,1,1},
+                                {1,0,0,1,1},
+                        };
+                        Matrix testMatrix = new Matrix(adjMatrix);
+                        SubMarine submarine = new SubMarine(testMatrix);
                         int count = submarine.submarineFind();
 
                         objectOutputStream.writeObject(count);
@@ -133,7 +139,6 @@ public class MatrixIHandler implements IHandler, Serializable {
                         objectOutputStream.writeObject(lst);
 
                     } catch (NullPointerException nullPointerException) {nullPointerException.printStackTrace();}
-
                     break;
                 }
 
@@ -145,14 +150,11 @@ public class MatrixIHandler implements IHandler, Serializable {
                 case "end index":{
                     this.end = (Index)objectInputStream.readObject();
                     break;
-
                 }
 
                 case "stop":
                 {
                     System.out.println("Closing the socket");
-
-
                     doWork = false;
                     break;
                 }

@@ -37,11 +37,6 @@ class ClientTaskServer implements Runnable {
         };
         threadPool.execute(clientHandling);
     }
-   /* public synchronized void stop()
-    {
-        if(threadPool!=null) threadPool.shutdown();
 
-    }
-    */
 }
 
