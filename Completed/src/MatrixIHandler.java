@@ -7,9 +7,8 @@ public class MatrixIHandler implements IHandler, Serializable {
     private Matrix matrix;
     private Index start,end;
 
-    /*
-    to clear data members between clients (if same instance is shared among clients/tasks)
-     */
+
+    //Reset params between clients - possible shared instance among clients/tasks.
     private void resetParams(){
         this.matrix = null;
         this.start = null;
@@ -19,13 +18,11 @@ public class MatrixIHandler implements IHandler, Serializable {
     @Override
     public void handle(InputStream fromClient, OutputStream toClient)
             throws IOException, ClassNotFoundException, ExecutionException, InterruptedException {
-
-        //Use switch-case in order to get command from the client
         ObjectInputStream objectInputStream = new ObjectInputStream(fromClient);
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(toClient);
         this.resetParams();
         // in order to use same handler between tasks/clients
-
+        // Use switch-case in order to get command from the client
         boolean doWork = true;
         while(doWork){
 
@@ -35,7 +32,6 @@ public class MatrixIHandler implements IHandler, Serializable {
                 {
                     int row = (int) objectInputStream.readObject();
                     int col = (int) objectInputStream.readObject();
-
                     this.matrix = new Matrix(row,col);
                     this.matrix.printMatrix();
                     objectOutputStream.writeObject(matrix);
@@ -46,9 +42,9 @@ public class MatrixIHandler implements IHandler, Serializable {
                 {
                     int row = (int) objectInputStream.readObject();
                     int col = (int) objectInputStream.readObject();
-                    int bond= (int) objectInputStream.readObject();
+                    int bound= (int) objectInputStream.readObject();
 
-                    this.matrix = new Matrix(row,col,bond);
+                    this.matrix = new Matrix(row,col,bound);
                     this.matrix.printMatrix();
                     objectOutputStream.writeObject(matrix);
                     break;

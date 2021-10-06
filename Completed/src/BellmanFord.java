@@ -6,10 +6,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import static java.lang.Thread.sleep;
 /*
  * This class uses classic BellmanFord algorithm to find all shortest paths from source to destination
- * on a weighted matrix with  possible negative weights
- *First the function runs find path to initialize the distance matrix from source to destination
+ * on a weighted matrix with  possible negative weights.
+ * First the function runs find path to initialize the distance matrix from source to destination
  * then it calls find Path function that runs on the distance matrix to find all the shortest paths
- *
  * */
 public class BellmanFord {
 
@@ -32,9 +31,8 @@ public class BellmanFord {
     public BellmanFord(Matrix matrix,Index source, Index destination)
     {
         this.matrix = matrix;
-        //this.threadPool = null;
         this.traversable = new TraversableMatrix(this.matrix);
-        this.traversable.setStartIndex(new Index(source.getRow(),source.getColumn())); // phase 3
+        this.traversable.setStartIndex(new Index(source.getRow(),source.getColumn()));
         this.traversable.setEndIndex(new Index(destination.getRow(),destination.getColumn()));
         indexQueue = new LinkedList<>();
         dist = new int[matrix.lengthRow()][matrix.lengthCol()];
@@ -55,26 +53,23 @@ public class BellmanFord {
     Callable  <List<Node>>  task = () ->
     {
         List<Node> pathList = new LinkedList<>();
-        /*  Node<Index> node = localnode;*/
         pathList.add(localnode);
         Queue<List<Node>> queueList = new LinkedList<>();
         queueList.add(pathList);
         while (!queueList.isEmpty())
         {
-            Collection<Node<Index>> neighbor = new ArrayList<>();
+            Collection<Node<Index>> neighbors = new ArrayList<>();
             pathList = queueList.poll();
             int last = pathList.size()-1;
             Node node = pathList.get(last);
             localPathFind.get().add(node);
-            neighbor = traversable.getNeighbors(node);
-
+            neighbors = traversable.getNeighbors(node);
             int min = Integer.MAX_VALUE;
             if (pathList.get((pathList.size() - 1)).getData().equals(traversable.getStartIndex()))
             {
-
                 return pathList;
             }
-            for (Node neighborNode : neighbor)
+            for (Node neighborNode : neighbors)
             {
                 if (!localPathFind.get().contains(neighborNode))
                 {
@@ -85,28 +80,25 @@ public class BellmanFord {
                 }
             }
             int counter = 0;
-            for (Node neighborNode : neighbor)
+            for (Node neighborNode : neighbors)
             {
                 Index index = (Index) neighborNode.getData();
 
                 if (dist[index.getRow()][index.getColumn()] == min && !localPathFind.get().contains(neighborNode))
                 {
-
                     counter++;
                     if (counter > 1) {
                         localnode = neighborNode;
                         findShortestPaths();
-
-
                     } else {
                         pathList.add(neighborNode);
                         queueList.add(pathList);
                     }
-
                 }
             }
         }
-        return null;//can't reach here!
+        return null;
+        //We'll not get here
     };
 
     /*
@@ -114,21 +106,19 @@ public class BellmanFord {
      * after receiving the paths list, we run on each list to add the node's father until we reach the starting node
      * and it all to the list.
      * also we used write lock to insure only one thread at a time reach into the critical section.
-     * */
+     */
+
     public void findShortestPaths() throws ExecutionException, InterruptedException {
-
-
         futureList = threadPool.submit(task);
         try {
-
             allShortestPath.add(futureList.get());
-
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
         } catch (ExecutionException executionException) {
             executionException.printStackTrace();
         }
         if (futureList.isDone()) {
+            // Critical section
             readWriteLock.writeLock().lock();
             for (List<Node> list : allShortestPath) {
                 if (list.get(0).getParent() != null)
@@ -151,48 +141,40 @@ public class BellmanFord {
 
     }
 
-    /*This function calculates the total lowest cost to go from source index to every index in the matrix
-     *also detects negative weight cycle by checking if there is relaxation.
-     * after calculates it calls the find path function to get all the shortest paths,
-     * and returns it as list of lists
-     * */
+    /*
+     *This function calculates the total lowest cost from source index to every index in the matrix
+     *also detects negative weight cycle.
+     *after calculates it calls the find path function to get all the shortest paths,
+     *and returns it as list of lists
+     */
     public List<List<Node>> BellmanFordAlgo() throws ExecutionException, InterruptedException {
 
         for (int i = 0; i < matrix.lengthRow(); ++i)
             for(int j = 0; j < matrix.lengthCol();j++)
-            {
                 dist[i][j] = Integer.MAX_VALUE;
-            }
+
         dist[traversable.getStartIndex().getRow()][traversable.getStartIndex().getColumn()] = matrix.getValue(traversable.getStartIndex());
-        int matrixSize = matrix.lengthRow() * matrix.lengthCol();
         indexQueue.add(traversable.getStartIndex());
         while (!indexQueue.isEmpty())
         {
-
-            Collection<Index> neighbor = new ArrayList<>();
+            Collection<Index> neighbors;
             Index index = indexQueue.poll();
             finished.add(index);
-            neighbor = matrix.getNeighbors(index);
-            neighbor.addAll(matrix.getNeighborsWithCross(index)); // Added
-            for(Index index1 : neighbor) {
+            neighbors = matrix.getNeighbors(index);
+            neighbors.addAll(matrix.getNeighborsWithCross(index));
+            for(Index index1 : neighbors) {
 
                 if (dist[index.getRow()][index.getColumn()] != Integer.MAX_VALUE &&
                         dist[index.getRow()][index.getColumn()] + matrix.getValue(index1) < dist[index1.getRow()][index1.getColumn()]) {
 
                     dist[index1.getRow()][index1.getColumn()] = matrix.getValue(index1) + dist[index.getRow()][index.getColumn()];
-
-
                 }
                 if (!indexQueue.contains(index1) && !finished.contains(index1))
-                {
                     indexQueue.add(index1);
-                }
-
             }
         }
         source = new Index(traversable.getEndIndex().getRow(),traversable.getEndIndex().getColumn());
         System.out.println(Arrays.deepToString(dist).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
-
         findShortestPaths();
         threadPool.shutdown();
         return allShortestPath;

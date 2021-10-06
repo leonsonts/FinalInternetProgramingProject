@@ -4,7 +4,6 @@ import java.util.*;
 
 
 public class Matrix  implements Serializable {
-
     public int[][] primitiveMatrix;
     public Matrix(int[][] oArray) {
         List<int[]> list = new ArrayList<>();
@@ -132,7 +131,7 @@ public class Matrix  implements Serializable {
     }
 
     public int lengthCol() { return primitiveMatrix[0].length; }
-
+    // Responsive index validation with the user during input on menu.
     public Index indexCheck(int row)
     {
         Scanner scan = new Scanner(System.in);

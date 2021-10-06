@@ -18,7 +18,6 @@ class ClientTaskServer implements Runnable {
 
     @Override
     public void run() {
-
         System.out.println("Client connected");
         threadPool = new ThreadPoolExecutor(3, 5, 10,
                 TimeUnit.SECONDS, new LinkedBlockingQueue<>());
@@ -26,9 +25,7 @@ class ClientTaskServer implements Runnable {
             try {
                 requestHandler.handle(clientSocket.getInputStream(),
                         clientSocket.getOutputStream());
-                // finished handling client. now close all streams
-
-
+                // Finish handling client. now close all streams.
                 clientSocket.getInputStream().close();
                 clientSocket.getOutputStream().close();
                 clientSocket.close();
@@ -37,14 +34,14 @@ class ClientTaskServer implements Runnable {
             } catch (ClassNotFoundException | ExecutionException | InterruptedException ce) {
                 System.err.println(ce.getMessage());
             }
-
         };
         threadPool.execute(clientHandling);
     }
-    public synchronized void stop()
+   /* public synchronized void stop()
     {
         if(threadPool!=null) threadPool.shutdown();
 
     }
+    */
 }
 
